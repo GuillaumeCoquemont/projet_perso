@@ -8,22 +8,164 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// --- Roles ---
 enum Role {
   ADMIN
   USER
 }
 
+// --- User ---
 model User {
-  id           String  @id @default(cuid())
-  email        String  @unique
-  passwordHash String
-  name         String?
-  role         Role    @default(USER)
-  image        String?
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  name           String?
+  role           Role     @default(USER)
+  image          String?
+  isActive       Boolean  @default(true)
+  emailVerified  DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  isActive      Boolean   @default(true)
-  emailVerified DateTime?
+  // Relations
+  plants         Plant[]
+  recipes        Recipe[]
+  applications   Application[]
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// --- Plant enums ---
+enum LightExposure {
+  DIRECT
+  INDIRECT
+  LOW
+  SHADE
+  MIXED
+  OTHER
+}
+
+enum WateringSchedule {
+  DAILY
+  EVERY_2_3_DAYS
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  SPARSE
+  WHEN_DRY
+  OTHER
+}
+
+// --- Plant ---
+model Plant {
+  id            String   @id @default(cuid())
+  ownerId       String
+  owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  name          String
+  species       String?
+
+  // Exposition / luminosité
+  light         LightExposure?
+  lightOther    String?
+
+  // Arrosage
+  watering      WateringSchedule?
+  wateringOther String?
+
+  // Température & humidité
+  tempMinC      Int?
+  tempMaxC      Int?
+  humidityMin   Int?
+  humidityMax   Int?
+  climateNotes  String?
+
+  // Rempotage
+  repotMinYears Int?
+  repotMaxYears Int?
+  repotOther    String?
+
+  // Animal / Pet-friendly
+  petSafe       Boolean?
+  petNotes      String?
+
+  imageUrl      String?
+  notes         String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([ownerId])
+}
+
+// --- Recipe helpers ---
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Recipe {
+  id            String   @id @default(cuid())
+  ownerId       String
+  owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  title         String
+  description   String?
+  imageUrl      String?
+
+  // Lists stockées en JSON
+  ingredients   Json? 
+  steps         Json?
+  tags          Json?
+  prepTimeMin   Int?
+  cookTimeMin   Int?
+  difficulty    Difficulty @default(EASY)
+  isPublic      Boolean   @default(false)
+
+  notes         String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([ownerId])
+}
+
+// --- Applications (candidatures) ---
+enum AppStatus {
+  DRAFT
+  SENT
+  INTERVIEW
+  OFFER
+  REJECTED
+}
+
+model Application {
+  id            String    @id @default(cuid())
+  ownerId       String
+  owner         User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  company       String
+  position      String
+  status        AppStatus @default(DRAFT)
+
+  location      String?
+  appliedAt     DateTime?
+  salaryMin     Int?
+  salaryMax     Int?
+  contractType  String?    
+
+  cvUrl         String?
+  coverUrl      String?
+  notes         String?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([ownerId])
+  @@index([status])
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "../erd/diagram.svg"
+  template = "mermaid"
 }
