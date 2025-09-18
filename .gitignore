@@ -47,3 +47,6 @@ next-env.d.ts
 
 # Prisma local DB
 prisma/*.db
+
+# Prisma local DB
+prisma/*.db
