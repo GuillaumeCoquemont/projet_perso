@@ -102,6 +102,7 @@ enum Difficulty {
   HARD
 }
 
+// --- Recipe ---
 model Recipe {
   id            String   @id @default(cuid())
   ownerId       String
@@ -137,6 +138,7 @@ enum AppStatus {
   REJECTED
 }
 
+// --- Application ---
 model Application {
   id            String    @id @default(cuid())
   ownerId       String
