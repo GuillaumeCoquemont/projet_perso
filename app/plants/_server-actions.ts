@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { plantInputSchema } from "./_validators";
@@ -38,6 +39,30 @@ export async function createPlant(formData: FormData) {
   });
 
   await createPlantService(session.user.id, input);
+
+  revalidatePath("/plants");
+  redirect("/plants");
+}
+
+export type DeletePlantState = { ok: boolean; error?: string };
+
+export async function deletePlant(
+  _prev: DeletePlantState,
+  formData: FormData
+): Promise<DeletePlantState> {
+  const session = await auth();
+  if (!session) return { ok: false, error: "Unauthorized" };
+
+  const id = formData.get("id");
+  if (!id || typeof id !== "string") {
+    return { ok: false, error: "ID invalide" };
+  }
+
+  try {
+    await prisma.plant.delete({ where: { id } });
+  } catch {
+    return { ok: false, error: "Suppression impossible" };
+  }
 
   revalidatePath("/plants");
   redirect("/plants");
