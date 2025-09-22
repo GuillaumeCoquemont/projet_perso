@@ -7,9 +7,10 @@ import PlantCard from "../components/PlantCard";
 export default async function PlantDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const plant = await prisma.plant.findUnique({ where: { id: params.id } });
+  const { id } = await params;
+  const plant = await prisma.plant.findUnique({ where: { id } });
   if (!plant) return <div className="p-6">Plante introuvable.</div>;
 
   return (
