@@ -36,7 +36,6 @@ export default function DeleteButton({
 
   const onSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
-      // Why: ask before irreversible operation
       if (!confirmText) return;
       if (!window.confirm(confirmText)) {
         e.preventDefault();

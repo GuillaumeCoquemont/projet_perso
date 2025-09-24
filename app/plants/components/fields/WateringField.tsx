@@ -3,7 +3,12 @@
 import { WATERING_LABELS } from "../../labels";
 import { WATERING_OPTIONS } from "../../_validators";
 
-export default function WateringField() {
+type Props = {
+  defaultValue?: string | null;
+  defaultOther?: string | null;
+};
+
+export default function WateringField({ defaultValue, defaultOther }: Props) {
   return (
     <div className="space-y-2">
       <label className="block">
@@ -11,6 +16,8 @@ export default function WateringField() {
         <select
           name="watering"
           className="border rounded px-3 py-2 w-full mb-2"
+          defaultValue={defaultValue ?? ""}
+          required
         >
           <option value="">-- Choisir --</option>
           {WATERING_OPTIONS.map((o) => (
@@ -25,6 +32,7 @@ export default function WateringField() {
         name="wateringOther"
         className="border rounded px-3 py-2 w-full"
         placeholder="Autre arrosage"
+        defaultValue={defaultOther ?? ""}
       />
     </div>
   );
