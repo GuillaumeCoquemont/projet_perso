@@ -1,4 +1,5 @@
-import { prisma } from "./db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth-options";
 
 export type SessionUser = {
   id: string;
@@ -6,25 +7,17 @@ export type SessionUser = {
   name: string | null;
   role: "ADMIN" | "USER";
 };
-
 export type Session = { user: SessionUser } | null;
 
 export async function auth(): Promise<Session> {
-  const preferEmail = process.env.DEV_USER_EMAIL ?? undefined;
-
-  const user = await prisma.user.findFirst({
-    where: preferEmail ? { email: preferEmail, isActive: true } : { isActive: true },
-    orderBy: { createdAt: "asc" },
-  });
-
-  if (!user) return null;
-
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) return null;
   return {
     user: {
-      id: user.id,
-      email: user.email,
-      name: user.name ?? null,
-      role: user.role as "ADMIN" | "USER",
+      id: (session.user as any).id,
+      email: session.user.email,
+      name: session.user.name ?? null,
+      role: ((session.user as any).role ?? "USER") as "ADMIN" | "USER",
     },
   };
 }
