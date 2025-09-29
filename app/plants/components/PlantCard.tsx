@@ -1,3 +1,5 @@
+import { LIGHT_LABELS, WATERING_LABELS } from "../labels";
+
 type Plant = {
   name: string;
   species?: string | null;
@@ -40,7 +42,11 @@ export default function PlantCard({ plant }: { plant: Plant }) {
       <div className="grid grid-cols-2 gap-3 text-sm">
         <div>
           <p className="font-medium">Luminosité</p>
-          <p className="text-gray-700">{plant.light ?? "—"}</p>
+          <p className="text-gray-700">
+            {plant.light
+              ? LIGHT_LABELS[plant.light] ?? plant.light
+              : "—"}
+          </p>
           {plant.lightOther && (
             <p className="text-gray-500">{plant.lightOther}</p>
           )}
@@ -48,7 +54,11 @@ export default function PlantCard({ plant }: { plant: Plant }) {
 
         <div>
           <p className="font-medium">Arrosage</p>
-          <p className="text-gray-700">{plant.watering ?? "—"}</p>
+          <p className="text-gray-700">
+            {plant.watering
+              ? WATERING_LABELS[plant.watering] ?? plant.watering
+              : "—"}
+          </p>
           {plant.wateringOther && (
             <p className="text-gray-500">{plant.wateringOther}</p>
           )}
