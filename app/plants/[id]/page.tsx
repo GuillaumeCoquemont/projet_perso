@@ -4,6 +4,7 @@ import ActionBar from "@/app/applications/components/common/ActionBar";
 import DeleteButton from "@/app/applications/components/common/DeleteButton";
 import { deletePlant } from "../_server-actions";
 
+
 export default async function PlantDetailPage({
   params,
 }: {
