@@ -16,7 +16,7 @@ export default async function PlantDetailPage({
 
   return (
     <div className="p-6">
-      <ActionBar backHref="/plants" editHref={`/plants/${id}/edit`} className="no-print">
+      <ActionBar backHref="/plants" editHref={`/plants/${id}/edit`} printHref={`/plants/print/sheet?ids=${id}`} className="no-print">
         <DeleteButton
           action={deletePlant}
           initial={{ ok: false }}
