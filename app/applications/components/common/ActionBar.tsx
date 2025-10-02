@@ -8,6 +8,7 @@ type Props = PropsWithChildren<{
   editHref?: string;
   className?: string;
   hidePrint?: boolean;
+  printHref?: string;
 }>;
 
 /** Why: centraliser les actions communes (réutilisable sur toutes les fiches) */
@@ -15,6 +16,7 @@ export default function ActionBar({
   backHref = "/",
   editHref,
   hidePrint = false,
+  printHref,
   className = "",
   children,
 }: Props) {
@@ -30,14 +32,13 @@ export default function ActionBar({
       )}
 
       {!hidePrint && (
-        <button
-          type="button"
-          onClick={() => window.print()}
+        <Link
+          href={printHref ?? "/plants/print"}
           className="inline-flex items-center rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50"
           title="Imprimer"
         >
           Imprimer
-        </button>
+        </Link>
       )}
 
       {editHref ? (
