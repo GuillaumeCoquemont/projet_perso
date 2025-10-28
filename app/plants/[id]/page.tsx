@@ -3,7 +3,7 @@ import PlantCard from "../components/PlantCard";
 import ActionBar from "@/app/applications/components/common/ActionBar";
 import DeleteButton from "@/app/applications/components/common/DeleteButton";
 import { deletePlant } from "../_server-actions";
-
+import Card from "@/app/components/ui/Card";
 
 export default async function PlantDetailPage({
   params,
@@ -15,8 +15,13 @@ export default async function PlantDetailPage({
   if (!plant) return <div className="p-6">Plante introuvable.</div>;
 
   return (
-    <div className="p-6">
-      <ActionBar backHref="/plants" editHref={`/plants/${id}/edit`} printHref={`/plants/print/sheet?ids=${id}`} className="no-print">
+    <div className="p-6 space-y-4">
+      <ActionBar
+        backHref="/plants"
+        editHref={`/plants/${id}/edit`}
+        printHref={`/plants/print/sheet?ids=${id}`}
+        className="no-print"
+      >
         <DeleteButton
           action={deletePlant}
           initial={{ ok: false }}
@@ -24,7 +29,10 @@ export default async function PlantDetailPage({
           confirmText="Supprimer cette fiche plante ?"
         />
       </ActionBar>
-      <PlantCard plant={plant} />
+
+      <Card>
+        <PlantCard plant={plant} />
+      </Card>
     </div>
   );
 }

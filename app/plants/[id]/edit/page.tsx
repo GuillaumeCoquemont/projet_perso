@@ -1,9 +1,11 @@
+
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import PlantForm from "../../components/PlantForm";
 import { updatePlant } from "../../_server-actions";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ButtonLink } from "@/app/components/ui/Button";
+import Card from "@/app/components/ui/Card";
 
 export default async function EditPlantPage({
   params,
@@ -15,14 +17,15 @@ export default async function EditPlantPage({
   const session = await auth();
   if (!session) {
     return (
-      <div className="p-6">
-        <p className="mb-2">Accès restreint.</p>
-        <Link
+      <div className="p-6 text-center space-y-3">
+        <p className="text-gray-700">Accès restreint.</p>
+        <ButtonLink
+          as="link"
           href={`/login?callbackUrl=${encodeURIComponent(`/plants/${id}/edit`)}`}
-          className="underline"
+          variant="primary"
         >
           Se connecter
-        </Link>
+        </ButtonLink>
       </div>
     );
   }
@@ -36,9 +39,11 @@ export default async function EditPlantPage({
   const isOwner = plant!.ownerId === session.user.id;
   if (!isAdmin && !isOwner) {
     return (
-      <div className="p-6">
-        <p className="mb-4">Non autorisé à modifier cette plante.</p>
-        <Link href={`/plants/${id}`} className="underline">Retour à la fiche</Link>
+      <div className="p-6 space-y-3">
+        <p className="mb-1">Non autorisé à modifier cette plante.</p>
+        <ButtonLink as="link" href={`/plants/${id}`} variant="secondary">
+          Retour à la fiche
+        </ButtonLink>
       </div>
     );
   }
@@ -47,13 +52,18 @@ export default async function EditPlantPage({
     <div className="p-6 space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Modifier la plante</h1>
-        <Link href={`/plants/${id}`} className="text-sm underline">Annuler</Link>
+        <ButtonLink as="link" href={`/plants/${id}`} variant="secondary">
+          Annuler
+        </ButtonLink>
       </div>
-      <PlantForm
-        action={updatePlant}
-        initialValues={plant}
-        submitLabel="Mettre à jour"
-      />
+
+      <Card className="max-w-xl">
+        <PlantForm
+          action={updatePlant}
+          initialValues={plant}
+          submitLabel="Mettre à jour"
+        />
+      </Card>
     </div>
   );
 }

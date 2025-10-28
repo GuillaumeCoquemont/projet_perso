@@ -2,6 +2,8 @@ import Link from "next/link";
 import { prisma } from "../../lib/db";
 import FilterBar from "./components/FilterBar";
 import { auth } from "@/lib/auth";
+import { ButtonLink } from "@/app/components/ui/Button";
+import Card from "@/app/components/ui/Card";
 
 type Search = {
   q?: string;
@@ -70,21 +72,24 @@ export default async function PlantsPage({ searchParams }: { searchParams: Promi
     <div className="p-6 space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Plantes</h1>
-        <Link href="/plants/new" className="border rounded px-3 py-2">
+        <ButtonLink as="link" href="/plants/new" variant="primary">
           Ajouter
-        </Link>
+        </ButtonLink>
       </div>
+
       <FilterBar />
 
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {plants.map((p: (typeof plants)[number]) => (
-          <li key={p.id} className="border rounded p-4 hover:shadow">
-            <Link href={`/plants/${p.id}`}>
-              <div className="font-medium">{p.name}</div>
-              {p.species && (
-                <div className="text-sm text-gray-600">{p.species}</div>
-              )}
-            </Link>
+        {plants.map((p) => (
+          <li key={p.id}>
+            <Card className="hover:shadow">
+              <Link href={`/plants/${p.id}`}>
+                <div className="font-medium">{p.name}</div>
+                {p.species && (
+                  <div className="text-sm text-gray-600">{p.species}</div>
+                )}
+              </Link>
+            </Card>
           </li>
         ))}
         {plants.length === 0 && (
@@ -95,21 +100,25 @@ export default async function PlantsPage({ searchParams }: { searchParams: Promi
       </ul>
 
       <div className="flex items-center justify-center space-x-4">
-        <Link
+        <ButtonLink
+          as="link"
           href={pageNum > 1 ? mkUrl(pageNum - 1) : "#"}
-          className={`px-3 py-1 border rounded ${pageNum === 1 ? "opacity-50 pointer-events-none" : ""}`}
+          variant="secondary"
+          className={pageNum === 1 ? "opacity-50 pointer-events-none" : ""}
         >
           Précédent
-        </Link>
+        </ButtonLink>
         <span>
           Page {pageNum} sur {totalPages}
         </span>
-        <Link
+        <ButtonLink
+          as="link"
           href={pageNum < totalPages ? mkUrl(pageNum + 1) : "#"}
-          className={`px-3 py-1 border rounded ${pageNum === totalPages ? "opacity-50 pointer-events-none" : ""}`}
+          variant="secondary"
+          className={pageNum === totalPages ? "opacity-50 pointer-events-none" : ""}
         >
           Suivant
-        </Link>
+        </ButtonLink>
       </div>
     </div>
   );
